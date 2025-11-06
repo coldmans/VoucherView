@@ -3,6 +3,8 @@ package inu.voucherview.domain;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 @Data
 @NoArgsConstructor
 public class Course {
@@ -14,7 +16,7 @@ public class Course {
     private String endTime; // 종료시간
     private String weekDay; // 요일명
     private String courseDetail; // 상세 내용
-    private String price; // 수강 가격
-    private String priceValue; // 결제 금액 값
+    private BigDecimal price; // 수강 가격
+    private BigDecimal priceValue; // 결제 금액 값
 
 }
