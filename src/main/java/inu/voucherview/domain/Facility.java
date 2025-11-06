@@ -1,13 +1,14 @@
 package inu.voucherview.domain;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.locationtech.jts.geom.Point;
 
-@Data
-@NoArgsConstructor
+@Getter
+@ToString
+@EqualsAndHashCode(of = "facilityId")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Facility {
-    private Long facilityId;
+    private Long facilityId; // PK
     private String name;
     private String address;
     private String phoneNumber;
@@ -15,4 +16,8 @@ public class Facility {
 
     private Point location;
     private Double averRating;
+
+    public void changeAverRating(Double averRating){
+        this.averRating = averRating;
+    }
 }
