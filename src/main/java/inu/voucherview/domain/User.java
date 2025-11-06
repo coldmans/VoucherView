@@ -1,16 +1,17 @@
 package inu.voucherview.domain;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.locationtech.jts.geom.Point;
 
 
 import java.time.LocalDateTime;
 
-@Data
-@NoArgsConstructor
+@Getter
+@ToString
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EqualsAndHashCode(of = "userId")
 public class User {
-    private Long id;
+    private Long userId;
     private String email;
     private String password;
     private String nickname;
@@ -19,5 +20,16 @@ public class User {
     private Point location;
     private LocalDateTime createdAt;
 
+    public void changeEmail(String email){
+        this.email = email;
+    }
+
+    public void changePassword(String password){
+        this.password = password;
+    }
+
+    public void changeNickname(String nickname){
+        this.nickname = nickname;
+    }
 
 }
