@@ -2,8 +2,9 @@ package inu.voucherview.domain;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.locationtech.jts.geom.Point;
 
-import java.awt.*;
+
 import java.time.LocalDateTime;
 
 @Data
