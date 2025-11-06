@@ -32,4 +32,8 @@ public class User {
         this.nickname = nickname;
     }
 
+    public void changeLocation(Point location){
+        this.location = location;
+    }
+
 }
