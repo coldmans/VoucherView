@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="inu.voucherview.mapper.FacilityMapper">
+    <resultMap id ="FacilityMap" type = "inu.voucherview.domain.Facility">
+        <id column="facility_id" property="facilityId"/>
+        <result column="name" property="name"/>
+        <result column="address" property="address"/>
+        <result column="phone_number" property="phoneNumber"/>
+        <result column="main_sport" property="mainSport"/>
+        <result column="location" property="location"/>
+        <result column="aver_rating" property="averRating"/>
+    </resultMap>
+
+    <select id ="findById" resultMap = "FacilityMap">
+        SELECT facility_id, name, address, phone_number, main_sport, location, aver_rating
+        FROM facilities
+        WHERE facility_id = #{facilityId}
+    </select>
+
+    <select id = "findAll" resultMap = "FacilityMap">
+        SELECT facility_id, name, address, phone_number, main_sport, location, aver_rating
+        FROM facilities
+    </select>
+
+    <update id ="updateAverRating">
+        UPDATE facilities SET aver_rating = #{averRating}
+        WHERE facility_id = #{facilityId}
+    </update>
+
+
+</mapper>
