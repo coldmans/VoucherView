@@ -55,7 +55,7 @@
         LIMIT #{page.limit} OFFSET #{page.offset}
     </select>
 
-    <select id ="countByFacilityId" resultType="int">
+    <select id="countByFacilityId" resultType="int">
         SELECT COUNT(*)
         FROM courses
         WHERE
