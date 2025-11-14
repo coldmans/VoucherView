@@ -22,6 +22,11 @@
     <select id = "findAll" resultMap="FacilityMap">
         SELECT facility_id, name, address, phone_number, main_sport, location, aver_rating
         FROM facilities
+        ORDER BY facility_id DESC LIMIT #{page.limit} OFFSET #{page.offset}
+    </select>
+
+    <select id = "countAll" resultType = "int">
+        SELECT COUNT(*) FROM facilities
     </select>
 
     <update id ="updateAverRating">
