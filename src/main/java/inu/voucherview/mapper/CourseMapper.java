@@ -9,7 +9,7 @@ import java.util.List;
 public interface CourseMapper {
     /**
      * 특정 강좌 1건을 ID로 조회
-     * @Param courseId 강좌 ID
+     * @param courseId 강좌 ID
      * @return Course 객체
      */
     Course findById(@Param("courseId") Long courseId);
