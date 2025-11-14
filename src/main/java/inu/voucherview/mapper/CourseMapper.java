@@ -20,6 +20,10 @@ public interface CourseMapper {
      */
     List<Course> findAll(@Param("page") Pagination pagination);
 
+    /**
+     * 모든 강좌의 총 개수 조회
+     * @return 전체 강좌 개수
+     */
     int countAll();
 
     /**
