@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="inu.voucherview.mapper.CourseMapper">
+    <resultMap id="CourseMap"  type="inu.voucherview.domain.Course">
+        <id column="course_id" property="courseId"/>
+        <result column="facility_id" property="facilityId"/>
+        <result column="course_nm" property="courseNm"/>
+        <result column="lctrr_nm" property="teacher"/>
+        <result column="begin_time" property="beginTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="wkday_nm" property="weekDay"/>
+        <result column="course_detail_cn" property="courseDetail"/>
+        <result column="atnlc_prc" property="price"/>
+        <result column="setle_price_value" property="priceValue"/>
+    </resultMap>
+
+    <select id="findById" resultMap="CourseMap">
+        SELECT
+            course_id, facility_id, course_nm, lctrr_nm,
+            begin_time, end_time, wkday_nm, course_detail_cn,
+            atnlc_prc, setle_price_value
+        FROM
+            courses
+        WHERE
+            course_id = #{courseId}
+    </select>
+
+    <select id="findAll" resultMap="CourseMap">
+        SELECT
+            course_id, facility_id, course_nm, lctrr_nm, begin_time, end_time, wkday_nm, course_detail_cn, atnlc_prc, setle_price_value
+        FROM
+            courses
+        ORDER BY
+            course_id DESC
+        LIMIT #{page.limit} OFFSET #{page.offset}
+    </select>
+
+    <select id="countAll" resultType="int">
+        SELECT COUNT(*)
+        FROM courses
+    </select>
+
+    <select id="findByFacilityId" resultMap="CourseMap">
+        SELECT
+            course_id, facility_id, course_nm, lctrr_nm, begin_time, end_time, wkday_nm, course_detail_cn, atnlc_prc, setle_price_value
+        FROM
+            courses
+        WHERE
+            facility_id = #{facilityId}
+        ORDER BY
+            course_id DESC
+        LIMIT #{page.limit} OFFSET #{page.offset}
+    </select>
+
+    <select id="countByFacilityId" resultType="int">
+        SELECT COUNT(*)
+        FROM courses
+        WHERE
+            facility_id = #{facilityId}
+    </select>
+</mapper>
