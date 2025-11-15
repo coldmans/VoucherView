@@ -1,6 +1,8 @@
 package inu.voucherview.service;
 
 import inu.voucherview.domain.Facility;
+import inu.voucherview.exception.BusinessException;
+import inu.voucherview.exception.ErrorCode;
 import inu.voucherview.mapper.FacilityMapper;
 import inu.voucherview.response.FacilityListResponse;
 import inu.voucherview.util.Pagination;
@@ -18,6 +20,9 @@ public class FacilityServiceImpl implements FacilityService{
 
     @Override
     public FacilityListResponse getFacilityList(int page, int limit) {
+        if(page <= 0 || limit <= 0){
+            throw new BusinessException(ErrorCode.INVALID_INPUT);
+        }
         int totalCount = facilityMapper.countAll();
         Pagination pagination = new Pagination(page, limit, totalCount);
         List<Facility> facilityList = facilityMapper.findAll(pagination);
@@ -27,6 +32,10 @@ public class FacilityServiceImpl implements FacilityService{
 
     @Override
     public Facility getFacilityById(Long facilityId) {
-        return facilityMapper.findById(facilityId);
+        Facility facility = facilityMapper.findById(facilityId);
+        if(facility == null){
+            throw new BusinessException(ErrorCode.FACILITY_NOT_FOUND);
+        }
+        return facility;
     }
 }
