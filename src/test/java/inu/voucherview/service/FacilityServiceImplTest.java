@@ -2,6 +2,7 @@ package inu.voucherview.service;
 
 import inu.voucherview.domain.Facility;
 import inu.voucherview.mapper.FacilityMapper;
+import inu.voucherview.response.FacilityListResponse;
 import inu.voucherview.util.Pagination;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,7 +13,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -44,13 +44,13 @@ public class FacilityServiceImplTest {
         when(facilityMapper.findAll(any(Pagination.class))).thenReturn(fakeList);
 
         // [When]- 실행 (진짜 서비스 로직 호출)
-        Map<String, Object> result = facilityService.getFacilityList(page, limit);
+        FacilityListResponse result = facilityService.getFacilityList(page, limit);
 
         assertThat(result).isNotNull();
-        assertThat(result.get("facilities")).isEqualTo(fakeList);
-        assertThat(result.get("pagination")).isInstanceOf(Pagination.class);
+        assertThat(result.getFacilityList()).isEqualTo(fakeList);
+        assertThat(result.getPagination()).isInstanceOf(Pagination.class);
 
-        Pagination resultPagination = (Pagination) result.get("pagination");
+        Pagination resultPagination = (Pagination) result.getPagination();
         assertThat(resultPagination.getTotalCount()).isEqualTo(fakeTotalCount);
         assertThat(resultPagination.getTotalPages()).isEqualTo(5);
 

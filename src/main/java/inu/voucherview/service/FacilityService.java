@@ -1,8 +1,7 @@
 package inu.voucherview.service;
 
 import inu.voucherview.domain.Facility;
-
-import java.util.Map;
+import inu.voucherview.response.FacilityListResponse;
 
 public interface FacilityService {
     /**
@@ -11,7 +10,7 @@ public interface FacilityService {
      * @param limit 페이지당 개수
      * @return 'facilities' (목록)와 'pagination'이 담긴 Map
      */
-    Map<String, Object> getFacilityList(int page, int limit);
+    FacilityListResponse getFacilityList(int page, int limit);
 
     /**
      * 시설 상세 정보 조회
