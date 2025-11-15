@@ -18,7 +18,7 @@ public class FacilityServiceImpl implements FacilityService{
     private final FacilityMapper facilityMapper;
 
     @Override
-    public Map<String, Object> getFacilityList(int page, int limit, String ctprvnNm, String itemNm) {
+    public Map<String, Object> getFacilityList(int page, int limit) {
         int totalCount = facilityMapper.countAll();
         Pagination pagination = new Pagination(page, limit, totalCount);
         List<Facility> facilityList = facilityMapper.findAll(pagination);
