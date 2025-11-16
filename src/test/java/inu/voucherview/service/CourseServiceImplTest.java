@@ -84,7 +84,7 @@ public class CourseServiceImplTest {
         Long facilityId = 2L;
         int fakeTotalCount = 15;
         List<Course> fakeList = List.of(fakeCourse);
-        when(courseMapper.countAll()).thenReturn(fakeTotalCount);
+        when(courseMapper.countByFacilityId(eq(facilityId))).thenReturn(fakeTotalCount);
         when(courseMapper.findByFacilityId(eq(facilityId), any(Pagination.class))).thenReturn(fakeList);
 
         CourseListResponse result = courseService.getCoursesByFacilityId(facilityId, page, limit);
@@ -138,7 +138,7 @@ public class CourseServiceImplTest {
         int limit = 10;
         Long facilityId = 3L;
         int fakeTotalCount = 0;
-        when(courseMapper.countAll()).thenReturn(fakeTotalCount);
+        when(courseMapper.countByFacilityId(eq(facilityId))).thenReturn(fakeTotalCount);
         when(courseMapper.findByFacilityId(eq(facilityId), any(Pagination.class))).thenReturn(new ArrayList<>());
 
         CourseListResponse result = courseService.getCoursesByFacilityId(facilityId, page, limit);
