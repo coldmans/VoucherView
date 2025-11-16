@@ -20,4 +20,11 @@ public class Facility {
     public void changeAverRating(Double averRating){
         this.averRating = averRating;
     }
+
+    public static Facility of(Long facilityId, String name){
+        Facility f = new Facility();
+        f.name = name;
+        f.facilityId = facilityId;
+        return f;
+    }
 }
