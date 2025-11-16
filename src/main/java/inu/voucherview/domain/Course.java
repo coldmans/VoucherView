@@ -23,9 +23,9 @@ public class Course {
     private BigDecimal priceValue; // 결제 금액 값
 
     public static Course of(Long courseId, Long facilityId){
-        Course f = new Course();
-        f.facilityId = facilityId;
-        f.courseId = courseId;
-        return f;
+        Course course = new Course();
+        course.facilityId = facilityId;
+        course.courseId = courseId;
+        return course;
     }
 }
