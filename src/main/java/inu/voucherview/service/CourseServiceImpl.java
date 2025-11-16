@@ -36,7 +36,7 @@ public class CourseServiceImpl implements CourseService {
         if(page <= 0 || limit <= 0){
             throw new BusinessException(ErrorCode.INVALID_INPUT);
         }
-        int totalCount = courseMapper.countAll();
+        int totalCount = courseMapper.countByFacilityId(facilityId);
         Pagination pagination = new Pagination(page, limit, totalCount);
         List<Course> courseList = courseMapper.findByFacilityId(facilityId, pagination);
         return new CourseListResponse(courseList, pagination);
