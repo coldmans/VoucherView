@@ -11,7 +11,8 @@ public enum ErrorCode {
     INVALID_INPUT(HttpStatus.BAD_REQUEST, "C400", "잘못된 요청입니다."),
 
     // 404 NOT_FOUND
-    FACILITY_NOT_FOUND(HttpStatus.NOT_FOUND, "F404", "시설을 찾을 수 없습니다.");
+    FACILITY_NOT_FOUND(HttpStatus.NOT_FOUND, "F404", "시설을 찾을 수 없습니다."),
+    COURSE_NOT_FOUND(HttpStatus.NOT_FOUND, "C404", "강좌를 찾을 수 없습니다.");
 
     private final HttpStatus httpStatus;
     private final String code;

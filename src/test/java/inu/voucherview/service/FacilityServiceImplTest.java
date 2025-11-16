@@ -98,4 +98,28 @@ public class FacilityServiceImplTest {
 
     }
 
+    @Test
+    @DisplayName("시설 단건 조회(성공)")
+    void getFacilityById_Success(){
+        Long facilityId = 10L;
+        Facility facility = Facility.of(facilityId, "테스트시설");
+        when(facilityMapper.findById(facilityId)).thenReturn(facility);
+
+        Facility result = facilityService.getFacilityById(facilityId);
+
+        assertThat(result).isEqualTo(facility);
+        verify(facilityMapper, times(1)).findById(facilityId);
+    }
+
+    @Test
+    @DisplayName("시설 목록 조회(실패, 잘못된 입력)")
+    void getFacilityList_ShouldThrowException_WhenInvalidInput(){
+        assertThatThrownBy(() -> facilityService.getFacilityList(0, 10))
+                .isInstanceOf(BusinessException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.INVALID_INPUT);
+        assertThatThrownBy(() -> facilityService.getFacilityList(1, 0))
+                .isInstanceOf(BusinessException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.INVALID_INPUT);
+    }
+
 }

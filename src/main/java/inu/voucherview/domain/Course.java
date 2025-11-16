@@ -22,4 +22,10 @@ public class Course {
     private BigDecimal price; // 수강 가격
     private BigDecimal priceValue; // 결제 금액 값
 
+    public static Course of(Long courseId, Long facilityId){
+        Course f = new Course();
+        f.facilityId = facilityId;
+        f.courseId = courseId;
+        return f;
+    }
 }
