@@ -2,10 +2,12 @@ package inu.voucherview.mapper;
 
 import inu.voucherview.domain.Course;
 import inu.voucherview.util.Pagination;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
+@Mapper
 public interface CourseMapper {
     /**
      * 특정 강좌 1건을 ID로 조회
