@@ -1,6 +1,7 @@
 package inu.voucherview.service;
 
 import inu.voucherview.domain.Facility;
+import inu.voucherview.dto.FacilityDto;
 import inu.voucherview.exception.BusinessException;
 import inu.voucherview.exception.ErrorCode;
 import inu.voucherview.mapper.FacilityMapper;
@@ -105,7 +106,7 @@ public class FacilityServiceImplTest {
         Facility facility = Facility.of(facilityId, "테스트시설");
         when(facilityMapper.findById(facilityId)).thenReturn(facility);
 
-        Facility result = facilityService.getFacilityById(facilityId);
+        FacilityDto result = facilityService.getFacilityById(facilityId);
 
         assertThat(result).isEqualTo(facility);
         verify(facilityMapper, times(1)).findById(facilityId);

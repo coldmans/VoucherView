@@ -1,6 +1,6 @@
 package inu.voucherview.response;
 
-import inu.voucherview.domain.Facility;
+import inu.voucherview.dto.FacilityDto;
 import inu.voucherview.util.Pagination;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +13,6 @@ import java.util.List;
 @Getter
 @RequiredArgsConstructor
 public class FacilityListResponse {
-    private final List<Facility> facilityList;
+    private final List<FacilityDto> facilityList;
     private final Pagination pagination;
 }
