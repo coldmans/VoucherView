@@ -1,6 +1,7 @@
 package inu.voucherview.mapper;
 
 import inu.voucherview.domain.Course;
+import inu.voucherview.dto.CourseDto;
 import inu.voucherview.util.Pagination;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -14,7 +15,7 @@ public interface CourseMapper {
      * @param courseId 강좌 ID
      * @return Course 객체
      */
-    Course findById(@Param("courseId") Long courseId);
+    CourseDto findById(@Param("courseId") Long courseId);
 
     /**
      * @param pagination 페이지네이션 객체

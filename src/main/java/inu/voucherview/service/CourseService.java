@@ -1,6 +1,6 @@
 package inu.voucherview.service;
 
-import inu.voucherview.domain.Course;
+import inu.voucherview.dto.CourseDto;
 import inu.voucherview.response.CourseListResponse;
 
 public interface CourseService {
@@ -17,6 +17,6 @@ public interface CourseService {
     /**
      * 강좌 단건 상세 조회
      */
-    Course getCourseById(Long courseId);
+    CourseDto getCourseById(Long courseId);
 
 }

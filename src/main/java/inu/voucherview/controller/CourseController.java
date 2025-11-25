@@ -1,6 +1,6 @@
 package inu.voucherview.controller;
 
-import inu.voucherview.domain.Course;
+import inu.voucherview.dto.CourseDto;
 import inu.voucherview.response.CourseListResponse;
 import inu.voucherview.service.CourseService;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class CourseController {
      * [단건 상세 조회] GET /api/courses/{courseId}
      */
     @GetMapping("/{courseId}")
-    public Course getCourseById(
+    public CourseDto getCourseById(
             @PathVariable Long courseId
     ){
         return courseService.getCourseById(courseId);
