@@ -17,8 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -51,7 +51,11 @@ public class FacilityServiceImplTest {
         FacilityListResponse result = facilityService.getFacilityList(page, limit);
 
         assertThat(result).isNotNull();
-        assertThat(result.getFacilityList()).isEqualTo(fakeList);
+        assertThat(result.getFacilityList()).hasSize(1);
+
+        FacilityDto resultDto = result.getFacilityList().get(0);
+        assertThat(resultDto.getFacilityId()).isEqualTo(f.getFacilityId());
+        assertThat(resultDto.getName()).isEqualTo(f.getName());
         assertThat(result.getPagination()).isInstanceOf(Pagination.class);
 
         Pagination resultPagination = result.getPagination();
@@ -77,7 +81,7 @@ public class FacilityServiceImplTest {
         assertThat(result).isNotNull();
 
         assertThat(result.getFacilityList()).isNotNull();
-        assertThat(result.getFacilityList()).isEqualTo(fakeEmptyList);
+        assertThat(result.getFacilityList()).isEmpty();
 
         Pagination p = result.getPagination();
         assertThat(p.getTotalPages()).isEqualTo(1);
@@ -108,7 +112,8 @@ public class FacilityServiceImplTest {
 
         FacilityDto result = facilityService.getFacilityById(facilityId);
 
-        assertThat(result).isEqualTo(facility);
+        assertThat(result.getFacilityId()).isEqualTo(facilityId);
+        assertThat(result.getName()).isEqualTo(facility.getName());
         verify(facilityMapper, times(1)).findById(facilityId);
     }
 
