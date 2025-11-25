@@ -1,6 +1,7 @@
 package inu.voucherview.service;
 
 import inu.voucherview.domain.Course;
+import inu.voucherview.dto.CourseDto;
 import inu.voucherview.exception.BusinessException;
 import inu.voucherview.exception.ErrorCode;
 import inu.voucherview.mapper.CourseMapper;
@@ -44,7 +45,9 @@ public class CourseServiceImplTest {
         CourseListResponse result = courseService.getAllCourses(page, limit);
 
         assertThat(result).isNotNull();
-        assertThat(result.getCourses()).isEqualTo(fakeList);
+        assertThat(result.getCourses()).isNotNull();
+        assertThat(result.getCourses().size()).isEqualTo(1);
+        assertThat(result.getCourses().get(0).getCourseId()).isEqualTo(fakeCourse.getCourseId());
         Pagination p = result.getPagination();
         assertThat(p.getTotalCount()).isEqualTo(fakeTotalCount);
         assertThat(p.getTotalPages()).isEqualTo(3); // 30 / 10 = 3
@@ -90,7 +93,8 @@ public class CourseServiceImplTest {
         CourseListResponse result = courseService.getCoursesByFacilityId(facilityId, page, limit);
 
         assertThat(result).isNotNull();
-        assertThat(result.getCourses()).isEqualTo(fakeList);
+        assertThat(result.getCourses()).isNotNull();
+        assertThat(result.getCourses().size()).isEqualTo(1);
         assertThat(result.getPagination().getTotalCount()).isEqualTo(fakeTotalCount);
         verify(courseMapper, times(1)).findByFacilityId(eq(facilityId), any(Pagination.class));
     }
@@ -111,11 +115,14 @@ public class CourseServiceImplTest {
     @DisplayName("강좌 단건 조회(성공)")
     void getCourseById_Success(){
         Long courseId = 99L;
-        when(courseMapper.findById(courseId)).thenReturn(fakeCourse);
+        CourseDto fakeDto = new CourseDto(fakeCourse);
+        when(courseMapper.findById(courseId)).thenReturn(fakeDto);
 
-        Course result = courseService.getCourseById(courseId);
+        CourseDto result = courseService.getCourseById(courseId);
 
-        assertThat(result).isEqualTo(fakeCourse);
+        assertThat(result).isNotNull();
+        assertThat(result.getCourseId()).isEqualTo(fakeCourse.getCourseId());
+        assertThat(result.getFacilityId()).isEqualTo(fakeCourse.getFacilityId());
         verify(courseMapper, times(1)).findById(courseId);
     }
 

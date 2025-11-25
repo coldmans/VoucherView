@@ -1,6 +1,7 @@
 package inu.voucherview.service;
 
 import inu.voucherview.domain.Facility;
+import inu.voucherview.dto.FacilityDto;
 import inu.voucherview.response.FacilityListResponse;
 
 public interface FacilityService {
@@ -17,5 +18,5 @@ public interface FacilityService {
      * @param facilityId 시설 ID
      * @return Facility 객체
      */
-    Facility getFacilityById(Long facilityId);
+    FacilityDto getFacilityById(Long facilityId);
 }

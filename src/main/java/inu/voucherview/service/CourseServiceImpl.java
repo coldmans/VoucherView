@@ -1,6 +1,7 @@
 package inu.voucherview.service;
 
 import inu.voucherview.domain.Course;
+import inu.voucherview.dto.CourseDto;
 import inu.voucherview.exception.BusinessException;
 import inu.voucherview.exception.ErrorCode;
 import inu.voucherview.mapper.CourseMapper;
@@ -27,7 +28,10 @@ public class CourseServiceImpl implements CourseService {
         int totalCount = courseMapper.countAll();
         Pagination pagination = new Pagination(page, limit, totalCount);
         List<Course> courseList = courseMapper.findAll(pagination);
-        return new CourseListResponse(courseList, pagination);
+        List<CourseDto> dtoList = courseList.stream()
+                .map(CourseDto::new)
+                .toList();
+        return new CourseListResponse(dtoList, pagination);
 
     }
 
@@ -39,11 +43,14 @@ public class CourseServiceImpl implements CourseService {
         int totalCount = courseMapper.countByFacilityId(facilityId);
         Pagination pagination = new Pagination(page, limit, totalCount);
         List<Course> courseList = courseMapper.findByFacilityId(facilityId, pagination);
-        return new CourseListResponse(courseList, pagination);
+        List<CourseDto> dtoList = courseList.stream()
+                .map(CourseDto::new)
+                .toList();
+        return new CourseListResponse(dtoList, pagination);
     }
 
     @Override
-    public Course getCourseById(Long courseId) {
+    public CourseDto getCourseById(Long courseId) {
         return Optional.ofNullable(courseMapper.findById(courseId))
                 .orElseThrow(() -> new BusinessException(ErrorCode.COURSE_NOT_FOUND));
     }

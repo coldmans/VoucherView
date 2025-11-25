@@ -1,6 +1,7 @@
 package inu.voucherview.service;
 
 import inu.voucherview.domain.Facility;
+import inu.voucherview.dto.FacilityDto;
 import inu.voucherview.exception.BusinessException;
 import inu.voucherview.exception.ErrorCode;
 import inu.voucherview.mapper.FacilityMapper;
@@ -26,16 +27,20 @@ public class FacilityServiceImpl implements FacilityService{
         int totalCount = facilityMapper.countAll();
         Pagination pagination = new Pagination(page, limit, totalCount);
         List<Facility> facilityList = facilityMapper.findAll(pagination);
+        List<FacilityDto> dtoList = facilityList.stream()
+                .map(FacilityDto::new)
+                .toList();
 
-        return new FacilityListResponse(facilityList, pagination);
+        return new FacilityListResponse(dtoList, pagination);
     }
 
     @Override
-    public Facility getFacilityById(Long facilityId) {
+    public FacilityDto getFacilityById(Long facilityId) {
         Facility facility = facilityMapper.findById(facilityId);
         if(facility == null){
             throw new BusinessException(ErrorCode.FACILITY_NOT_FOUND);
         }
-        return facility;
+
+        return new FacilityDto(facility);
     }
 }
