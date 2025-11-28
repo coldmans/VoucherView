@@ -4,24 +4,26 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="inu.voucherview.mapper.CourseMapper">
-    <resultMap id="CourseMap"  type="inu.voucherview.domain.Course">
+    <resultMap id="CourseMap" type="inu.voucherview.domain.Course">
         <id column="course_id" property="courseId"/>
         <result column="facility_id" property="facilityId"/>
-        <result column="course_nm" property="courseNm"/>
-        <result column="lctrr_nm" property="teacher"/>
-        <result column="begin_time" property="beginTime"/>
-        <result column="end_time" property="endTime"/>
-        <result column="wkday_nm" property="weekDay"/>
-        <result column="course_detail_cn" property="courseDetail"/>
-        <result column="atnlc_prc" property="price"/>
-        <result column="setle_price_value" property="priceValue"/>
+        <result column="course_no" property="courseNo"/>
+        <result column="course_name" property="courseName"/>
+        <result column="sport_cd" property="sportCd"/>
+        <result column="sport_name" property="sportName"/>
+        <result column="start_date" property="startDate"/>
+        <result column="end_date" property="endDate"/>
+        <result column="establishment_year" property="establishmentYear"/>
+        <result column="establishment_month" property="establishmentMonth"/>
+        <result column="request_count" property="requestCount"/>
+        <result column="price" property="price"/>
     </resultMap>
 
     <select id="findById" resultMap="CourseMap">
         SELECT
-            course_id, facility_id, course_nm, lctrr_nm,
-            begin_time, end_time, wkday_nm, course_detail_cn,
-            atnlc_prc, setle_price_value
+            course_id, facility_id, course_no, course_name,
+            sport_cd, sport_name, start_date, end_date,
+            establishment_year, establishment_month, request_count, price
         FROM
             courses
         WHERE
@@ -30,7 +32,9 @@
 
     <select id="findAll" resultMap="CourseMap">
         SELECT
-            course_id, facility_id, course_nm, lctrr_nm, begin_time, end_time, wkday_nm, course_detail_cn, atnlc_prc, setle_price_value
+            course_id, facility_id, course_no, course_name,
+            sport_cd, sport_name, start_date, end_date,
+            establishment_year, establishment_month, request_count, price
         FROM
             courses
         ORDER BY
@@ -45,7 +49,9 @@
 
     <select id="findByFacilityId" resultMap="CourseMap">
         SELECT
-            course_id, facility_id, course_nm, lctrr_nm, begin_time, end_time, wkday_nm, course_detail_cn, atnlc_prc, setle_price_value
+            course_id, facility_id, course_no, course_name,
+            sport_cd, sport_name, start_date, end_date,
+            establishment_year, establishment_month, request_count, price
         FROM
             courses
         WHERE
