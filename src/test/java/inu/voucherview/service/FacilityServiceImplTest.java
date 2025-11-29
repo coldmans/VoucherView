@@ -41,8 +41,11 @@ public class FacilityServiceImplTest {
         Facility f = Facility.of(1L, "테스트시설");
         fakeList.add(f);
 
-        when(facilityMapper.countAll()).thenReturn(fakeTotalCount);
-        when(facilityMapper.findAll(any(Pagination.class))).thenReturn(fakeList);
+        // 필터 없어도 findWithFilters 사용
+        when(facilityMapper.countWithFilters(any(), any(), any(), any(), any(), any(), any(), any(), any()))
+                .thenReturn(fakeTotalCount);
+        when(facilityMapper.findWithFilters(any(Pagination.class), any(), any(), any(), any(), any(), any(), any(), any(), any(), any()))
+                .thenReturn(fakeList);
 
         FacilityListResponse result = facilityService.getFacilityList(
                 page, limit, null, null, null, null, null, null, null, null, null, null
@@ -60,9 +63,8 @@ public class FacilityServiceImplTest {
         assertThat(resultPagination.getTotalCount()).isEqualTo(fakeTotalCount);
         assertThat(resultPagination.getTotalPages()).isEqualTo(5);
 
-        verify(facilityMapper, times(1)).countAll();
-        verify(facilityMapper, times(1)).findAll(any(Pagination.class));
-        verify(facilityMapper, never()).findWithFilters(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any());
+        verify(facilityMapper, times(1)).countWithFilters(any(), any(), any(), any(), any(), any(), any(), any(), any());
+        verify(facilityMapper, times(1)).findWithFilters(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any());
     }
 
     @Test
@@ -239,6 +241,7 @@ public class FacilityServiceImplTest {
         assertThat(result.getFacilityList()).hasSize(1);
 
         verify(facilityMapper, times(1)).countWithFilters(eq(keyword), eq(ctNm), any(), any(), eq(minRating), any(), any(), any(), any());
+        verify(facilityMapper, times(1)).findWithFilters(any(), eq(keyword), eq(ctNm), any(), any(), eq(minRating), any(), any(), any(), any(), any());
     }
 
     @Test
@@ -248,8 +251,10 @@ public class FacilityServiceImplTest {
         int limit = 10;
 
         List<Facility> fakeEmptyList = new ArrayList<>();
-        when(facilityMapper.countAll()).thenReturn(0);
-        when(facilityMapper.findAll(any(Pagination.class))).thenReturn(fakeEmptyList);
+        when(facilityMapper.countWithFilters(any(), any(), any(), any(), any(), any(), any(), any(), any()))
+                .thenReturn(0);
+        when(facilityMapper.findWithFilters(any(Pagination.class), any(), any(), any(), any(), any(), any(), any(), any(), any(), any()))
+                .thenReturn(fakeEmptyList);
 
         FacilityListResponse result = facilityService.getFacilityList(
                 page, limit, null, null, null, null, null, null, null, null, null, null

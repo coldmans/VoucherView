@@ -111,7 +111,9 @@ class FacilityControllerTest {
                         .param("limit", "10")
                         .param("ctNm", "서울")
                         .param("ctDetailNm", "강남구"))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.facilityList").isEmpty())
+                .andExpect(jsonPath("$.pagination.totalCount").value(0));
     }
 
     @Test
@@ -131,7 +133,9 @@ class FacilityControllerTest {
                         .param("page", "1")
                         .param("limit", "10")
                         .param("minRating", "4.5"))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.facilityList").isEmpty())
+                .andExpect(jsonPath("$.pagination.totalCount").value(0));
     }
 
     @Test

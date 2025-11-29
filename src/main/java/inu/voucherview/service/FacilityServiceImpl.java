@@ -28,28 +28,20 @@ public class FacilityServiceImpl implements FacilityService {
         if("distance".equals(sortBy) && (lat == null || lng == null)){
             throw new BusinessException(ErrorCode.INVALID_INPUT);
         }
-        boolean ifFilter = keyword != null || ctNm != null || ctDetailNm != null || mainSport != null
-                || minRating != null || maxRating != null || radius != null;
-        int totalCount;
-        List<Facility> facilityList;
-        if(ifFilter){
-            totalCount = facilityMapper.countWithFilters(keyword, ctNm, ctDetailNm, mainSport, minRating,
-                    maxRating, lat, lng, radius);
-            Pagination pagination = new Pagination(page, limit, totalCount);
 
-            facilityList = facilityMapper.findWithFilters(pagination, keyword, ctNm, ctDetailNm, mainSport,
-                    minRating, maxRating, sortBy, lat, lng, radius);
-        }
-        else {
-            totalCount = facilityMapper.countAll();
-            Pagination pagination = new Pagination(page, limit, totalCount);
-            facilityList = facilityMapper.findAll(pagination);
-        }
+        // MyBatis <where> 절이 빈 조건을 처리하므로 항상 findWithFilters 사용
+        int totalCount = facilityMapper.countWithFilters(keyword, ctNm, ctDetailNm, mainSport, minRating,
+                maxRating, lat, lng, radius);
+        Pagination pagination = new Pagination(page, limit, totalCount);
+
+        List<Facility> facilityList = facilityMapper.findWithFilters(pagination, keyword, ctNm, ctDetailNm, mainSport,
+                minRating, maxRating, sortBy, lat, lng, radius);
+
         List<FacilityDto> dtoList = facilityList.stream()
                 .map(FacilityDto::new)
                 .toList();
 
-        return new FacilityListResponse(dtoList, new Pagination(page, limit, totalCount));
+        return new FacilityListResponse(dtoList, pagination);
     }
 
     @Override

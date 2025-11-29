@@ -2,6 +2,7 @@ package inu.voucherview.controller;
 
 import inu.voucherview.domain.Facility;
 import inu.voucherview.dto.FacilityDto;
+import inu.voucherview.dto.FacilitySearchRequest;
 import inu.voucherview.response.CourseListResponse;
 import inu.voucherview.response.FacilityListResponse;
 import inu.voucherview.service.CourseService;
@@ -17,25 +18,18 @@ public class FacilityController {
     private final CourseService courseService;
 
     /**
-     * [목록 조회] GET /api/facilities?page=1&limit=10
+     * [목록 조회 및 검색/필터링] GET /api/facilities?page=1&limit=10&keyword=수영&ctNm=서울
      */
     @GetMapping
     public FacilityListResponse getFacilityList(
             @RequestParam(name = "page", defaultValue = "1") int page,
             @RequestParam(name = "limit", defaultValue = "10") int limit,
-            @RequestParam(name = "keyword", required = false) String keyword,
-            @RequestParam(name = "ctNm", required = false) String ctNm, // 지역 ex(서울, 경기)
-            @RequestParam(name = "ctDetailNm", required = false) String ctDetailNm, // 구
-            @RequestParam(name = "mainSport", required = false) String mainSport,
-            @RequestParam(name = "minRating", required = false) Double minRating,
-            @RequestParam(name = "maxRating", required = false) Double maxRating,
-            @RequestParam(name = "sortBy", defaultValue = "rating") String sortBy, // rating, distance
-            @RequestParam(name = "lat", required = false) Double lat,
-            @RequestParam(name = "lng", required = false) Double lng,
-            @RequestParam(name = "radius", required = false) Integer radius // 반경
+            @ModelAttribute FacilitySearchRequest searchRequest
     ){
-        return facilityService.getFacilityList(page, limit, keyword, ctNm, ctDetailNm, mainSport,
-                minRating, maxRating, sortBy, lat, lng, radius
+        return facilityService.getFacilityList(page, limit, searchRequest.getKeyword(),
+                searchRequest.getCtNm(), searchRequest.getCtDetailNm(), searchRequest.getMainSport(),
+                searchRequest.getMinRating(), searchRequest.getMaxRating(), searchRequest.getSortBy(),
+                searchRequest.getLat(), searchRequest.getLng(), searchRequest.getRadius()
         );
     }
 
