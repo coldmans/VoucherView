@@ -25,7 +25,7 @@ public class FacilityServiceImpl implements FacilityService {
         if(page <= 0 || limit <= 0){
             throw new BusinessException(ErrorCode.INVALID_INPUT);
         }
-        if(sortBy.equals("distance") && (lat == null || lng == null)){
+        if("distance".equals(sortBy) && (lat == null || lng == null)){
             throw new BusinessException(ErrorCode.INVALID_INPUT);
         }
         boolean ifFilter = keyword != null || ctNm != null || ctDetailNm != null || mainSport != null
