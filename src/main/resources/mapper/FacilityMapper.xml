@@ -116,5 +116,31 @@
         <include refid="filterConditions"/>
     </select>
 
+    <!-- 메타데이터 조회 -->
+    <!-- 시/도 목록 -->
+    <select id="getDistinctProvinces" resultType="String">
+        SELECT DISTINCT province_name
+        FROM facilities
+        WHERE province_name IS NOT NULL
+        ORDER BY province_name
+    </select>
+
+    <!-- 특정 시/도의 구/시 목록 -->
+    <select id="getDistinctCities" resultType="String">
+        SELECT DISTINCT city_name
+        FROM facilities
+        WHERE province_name = #{province}
+          AND city_name IS NOT NULL
+        ORDER BY city_name
+    </select>
+
+    <!-- 종목 목록 -->
+    <select id="getDistinctSports" resultType="String">
+        SELECT DISTINCT main_sport
+        FROM facilities
+        WHERE main_sport IS NOT NULL
+        ORDER BY main_sport
+    </select>
+
 </mapper>
 

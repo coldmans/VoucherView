@@ -34,4 +34,9 @@ public interface FacilityMapper {
                          @Param("lat") Double lat,
                          @Param("lng") Double lng,
                          @Param("radius") Integer radius);
+
+    // 메타데이터 조회
+    List<String> getDistinctProvinces();  // 시/도 목록
+    List<String> getDistinctCities(@Param("province") String province);  // 특정 시/도의 구/시 목록
+    List<String> getDistinctSports();
 }
