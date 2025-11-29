@@ -21,6 +21,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -49,7 +50,9 @@ class FacilityControllerTest {
         Pagination pagination = new Pagination(1, 10, 1);
         FacilityListResponse response = new FacilityListResponse(dtoList, pagination);
 
-        when(facilityService.getFacilityList(1, 10)).thenReturn(response);
+        when(facilityService.getFacilityList(anyInt(), anyInt(), any(), any(), any(),
+                any(), any(), any(), any(), any(), any(), any()))
+                .thenReturn(response);
 
         // When & Then
         mockMvc.perform(get("/api/facilities")
@@ -67,6 +70,75 @@ class FacilityControllerTest {
     }
 
     @Test
+    @DisplayName("시설 목록 조회 - 키워드 검색")
+    void getFacilityList_WithKeyword() throws Exception {
+        // Given
+        List<FacilityDto> dtoList = new ArrayList<>();
+        FacilityDto dto = new FacilityDto(createMockFacility(1L, "수영장", 37.5, 127.0));
+        dtoList.add(dto);
+
+        Pagination pagination = new Pagination(1, 10, 1);
+        FacilityListResponse response = new FacilityListResponse(dtoList, pagination);
+
+        when(facilityService.getFacilityList(anyInt(), anyInt(), any(), any(), any(),
+                any(), any(), any(), any(), any(), any(), any()))
+                .thenReturn(response);
+
+        // When & Then
+        mockMvc.perform(get("/api/facilities")
+                        .param("page", "1")
+                        .param("limit", "10")
+                        .param("keyword", "수영"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.facilityList[0].name").value("수영장"));
+    }
+
+    @Test
+    @DisplayName("시설 목록 조회 - 지역 필터")
+    void getFacilityList_WithRegionFilter() throws Exception {
+        // Given
+        List<FacilityDto> dtoList = new ArrayList<>();
+        Pagination pagination = new Pagination(1, 10, 0);
+        FacilityListResponse response = new FacilityListResponse(dtoList, pagination);
+
+        when(facilityService.getFacilityList(anyInt(), anyInt(), any(), any(), any(),
+                any(), any(), any(), any(), any(), any(), any()))
+                .thenReturn(response);
+
+        // When & Then
+        mockMvc.perform(get("/api/facilities")
+                        .param("page", "1")
+                        .param("limit", "10")
+                        .param("ctNm", "서울")
+                        .param("ctDetailNm", "강남구"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.facilityList").isEmpty())
+                .andExpect(jsonPath("$.pagination.totalCount").value(0));
+    }
+
+    @Test
+    @DisplayName("시설 목록 조회 - 평점 필터")
+    void getFacilityList_WithRatingFilter() throws Exception {
+        // Given
+        List<FacilityDto> dtoList = new ArrayList<>();
+        Pagination pagination = new Pagination(1, 10, 0);
+        FacilityListResponse response = new FacilityListResponse(dtoList, pagination);
+
+        when(facilityService.getFacilityList(anyInt(), anyInt(), any(), any(), any(),
+                any(), any(), any(), any(), any(), any(), any()))
+                .thenReturn(response);
+
+        // When & Then
+        mockMvc.perform(get("/api/facilities")
+                        .param("page", "1")
+                        .param("limit", "10")
+                        .param("minRating", "4.5"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.facilityList").isEmpty())
+                .andExpect(jsonPath("$.pagination.totalCount").value(0));
+    }
+
+    @Test
     @DisplayName("시설 목록 조회 - 기본 파라미터 사용")
     void getFacilityList_WithDefaultParams() throws Exception {
         // Given
@@ -74,7 +146,9 @@ class FacilityControllerTest {
         Pagination pagination = new Pagination(1, 10, 0);
         FacilityListResponse response = new FacilityListResponse(dtoList, pagination);
 
-        when(facilityService.getFacilityList(1, 10)).thenReturn(response);
+        when(facilityService.getFacilityList(anyInt(), anyInt(), any(), any(), any(),
+                any(), any(), any(), any(), any(), any(), any()))
+                .thenReturn(response);
 
         // When & Then
         mockMvc.perform(get("/api/facilities"))
@@ -87,7 +161,8 @@ class FacilityControllerTest {
     @DisplayName("시설 목록 조회 - 잘못된 파라미터로 400 에러")
     void getFacilityList_InvalidParams() throws Exception {
         // Given
-        when(facilityService.getFacilityList(0, 10))
+        when(facilityService.getFacilityList(eq(0), anyInt(), any(), any(), any(),
+                any(), any(), any(), any(), any(), any(), any()))
                 .thenThrow(new BusinessException(ErrorCode.INVALID_INPUT));
 
         // When & Then
@@ -102,7 +177,24 @@ class FacilityControllerTest {
     void getFacilityById_Success() throws Exception {
         // Given
         Long facilityId = 1L;
-        FacilityDto dto = new FacilityDto(createMockFacility(facilityId, "테스트 시설", 37.5, 127.0));
+
+        // latitude, longitude를 직접 설정한 Facility 생성
+        inu.voucherview.domain.Facility facility = createMockFacility(facilityId, "테스트 시설", 37.5, 127.0);
+
+        // Reflection으로 latitude, longitude 설정
+        try {
+            java.lang.reflect.Field latField = facility.getClass().getDeclaredField("latitude");
+            latField.setAccessible(true);
+            latField.set(facility, 37.5);
+
+            java.lang.reflect.Field lngField = facility.getClass().getDeclaredField("longitude");
+            lngField.setAccessible(true);
+            lngField.set(facility, 127.0);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to set coordinates", e);
+        }
+
+        FacilityDto dto = new FacilityDto(facility);
 
         when(facilityService.getFacilityById(facilityId)).thenReturn(dto);
 
@@ -228,12 +320,14 @@ class FacilityControllerTest {
             sportField.set(facility, "축구");
 
             if (lat != null && lng != null) {
-                org.locationtech.jts.geom.GeometryFactory geometryFactory = new org.locationtech.jts.geom.GeometryFactory();
-                org.locationtech.jts.geom.Point point = geometryFactory.createPoint(new org.locationtech.jts.geom.Coordinate(lng, lat));
+                // latitude, longitude 필드 직접 설정
+                java.lang.reflect.Field latField = facility.getClass().getDeclaredField("latitude");
+                latField.setAccessible(true);
+                latField.set(facility, lat);
 
-                java.lang.reflect.Field locationField = facility.getClass().getDeclaredField("location");
-                locationField.setAccessible(true);
-                locationField.set(facility, point);
+                java.lang.reflect.Field lngField = facility.getClass().getDeclaredField("longitude");
+                lngField.setAccessible(true);
+                lngField.set(facility, lng);
             }
         } catch (Exception e) {
             throw new RuntimeException("테스트 데이터 생성 실패", e);

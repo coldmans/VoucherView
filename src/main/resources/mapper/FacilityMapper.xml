@@ -5,6 +5,8 @@
 
 <mapper namespace="inu.voucherview.mapper.FacilityMapper">
 
+
+
     <resultMap id ="FacilityMap" type="inu.voucherview.domain.Facility">
         <id column="facility_id" property="facilityId"/>
         <result column="name" property="name"/>
@@ -47,4 +49,72 @@
         WHERE facility_id = #{facilityId}
     </update>
 
+
+    <sql id="filterConditions">
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (
+                name LIKE CONCAT('%', #{keyword}, '%')
+                OR address LIKE CONCAT('%', #{keyword}, '%')
+                OR main_sport LIKE CONCAT('%', #{keyword}, '%')
+                )
+            </if>
+            <if test="ctNm != null and ctNm != ''">
+                AND province_name = #{ctNm}
+            </if>
+            <if test="ctDetailNm != null and ctDetailNm != ''">
+                AND city_name = #{ctDetailNm}
+            </if>
+            <if test="mainSport != null and mainSport != ''">
+                AND main_sport = #{mainSport}
+            </if>
+            <if test="minRating != null">
+                AND aver_rating >= #{minRating}
+            </if>
+            <if test="maxRating != null">
+                AND aver_rating &lt;= #{maxRating}
+            </if>
+            <if test="radius != null and lat != null and lng != null">
+                AND ST_Distance_Sphere(
+                location,
+                ST_GeomFromText(CONCAT('POINT(', #{lng}, ' ', #{lat}, ')'), 4326)
+                ) &lt;= #{radius}
+            </if>
+        </where>
+    </sql>
+
+    <!-- 필터링 적용 목록 조회 -->
+    <select id="findWithFilters" resultMap="FacilityMap">
+        SELECT facility_id, name, zip_no, province_name, city_name, address, tel_no, main_sport, aver_rating,
+        ST_Y(location) as latitude, ST_X(location) as longitude
+        <if test="sortBy == 'distance' and lat != null and lng != null">
+            , ST_Distance_Sphere(
+            location,
+            ST_GeomFromText(CONCAT('POINT(', #{lng}, ' ', #{lat}, ')'), 4326)
+            ) as distance
+        </if>
+        FROM facilities
+        <include refid="filterConditions"/>
+        <choose>
+            <when test="sortBy == 'distance' and lat != null and lng != null">
+                ORDER BY distance ASC
+            </when>
+            <when test="sortBy == 'name'">
+                ORDER BY name ASC
+            </when>
+            <otherwise>
+                ORDER BY aver_rating DESC, facility_id DESC
+            </otherwise>
+        </choose>
+        LIMIT #{pagination.limit} OFFSET #{pagination.offset}
+    </select>
+
+    <!-- 필터링 적용 개수 조회 -->
+    <select id="countWithFilters" resultType="int">
+        SELECT COUNT(*)
+        FROM facilities
+        <include refid="filterConditions"/>
+    </select>
+
 </mapper>
+

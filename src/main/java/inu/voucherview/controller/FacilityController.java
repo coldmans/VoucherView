@@ -2,6 +2,7 @@ package inu.voucherview.controller;
 
 import inu.voucherview.domain.Facility;
 import inu.voucherview.dto.FacilityDto;
+import inu.voucherview.dto.FacilitySearchRequest;
 import inu.voucherview.response.CourseListResponse;
 import inu.voucherview.response.FacilityListResponse;
 import inu.voucherview.service.CourseService;
@@ -17,14 +18,19 @@ public class FacilityController {
     private final CourseService courseService;
 
     /**
-     * [목록 조회] GET /api/facilities?page=1&limit=10
+     * [목록 조회 및 검색/필터링] GET /api/facilities?page=1&limit=10&keyword=수영&ctNm=서울
      */
     @GetMapping
     public FacilityListResponse getFacilityList(
             @RequestParam(name = "page", defaultValue = "1") int page,
-            @RequestParam(name = "limit", defaultValue = "10") int limit
+            @RequestParam(name = "limit", defaultValue = "10") int limit,
+            @ModelAttribute FacilitySearchRequest searchRequest
     ){
-        return facilityService.getFacilityList(page, limit);
+        return facilityService.getFacilityList(page, limit, searchRequest.getKeyword(),
+                searchRequest.getCtNm(), searchRequest.getCtDetailNm(), searchRequest.getMainSport(),
+                searchRequest.getMinRating(), searchRequest.getMaxRating(), searchRequest.getSortBy(),
+                searchRequest.getLat(), searchRequest.getLng(), searchRequest.getRadius()
+        );
     }
 
     /**

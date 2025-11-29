@@ -31,8 +31,8 @@ public class FacilityServiceImplTest {
     private FacilityServiceImpl facilityService;
 
     @Test
-    @DisplayName("시설 목록 조회(정상, 페이지네이션 포함)")
-    void getFacilityList_Success(){
+    @DisplayName("시설 목록 조회(정상, 필터 없음)")
+    void getFacilityList_Success_NoFilter(){
         int page = 1;
         int limit = 10;
         int fakeTotalCount = 50;
@@ -41,14 +41,15 @@ public class FacilityServiceImplTest {
         Facility f = Facility.of(1L, "테스트시설");
         fakeList.add(f);
 
-        // if facilityMapper.countAll() 호출 시 fakeTotalCount(50) 반환
-        when(facilityMapper.countAll()).thenReturn(fakeTotalCount);
+        // 필터 없어도 findWithFilters 사용
+        when(facilityMapper.countWithFilters(any(), any(), any(), any(), any(), any(), any(), any(), any()))
+                .thenReturn(fakeTotalCount);
+        when(facilityMapper.findWithFilters(any(Pagination.class), any(), any(), any(), any(), any(), any(), any(), any(), any(), any()))
+                .thenReturn(fakeList);
 
-        // if facilityMapper.findAll(Pagination 객체 아무거나)가 호출되면 fakeList를 반환
-        when(facilityMapper.findAll(any(Pagination.class))).thenReturn(fakeList);
-
-        // [When]- 실행 (진짜 서비스 로직 호출)
-        FacilityListResponse result = facilityService.getFacilityList(page, limit);
+        FacilityListResponse result = facilityService.getFacilityList(
+                page, limit, null, null, null, null, null, null, null, null, null, null
+        );
 
         assertThat(result).isNotNull();
         assertThat(result.getFacilityList()).hasSize(1);
@@ -62,8 +63,185 @@ public class FacilityServiceImplTest {
         assertThat(resultPagination.getTotalCount()).isEqualTo(fakeTotalCount);
         assertThat(resultPagination.getTotalPages()).isEqualTo(5);
 
-        verify(facilityMapper, times(1)).countAll();
-        verify(facilityMapper, times(1)).findAll(any(Pagination.class));
+        verify(facilityMapper, times(1)).countWithFilters(any(), any(), any(), any(), any(), any(), any(), any(), any());
+        verify(facilityMapper, times(1)).findWithFilters(any(), any(), any(), any(), any(), any(), any(), any(), any(), any(), any());
+    }
+
+    @Test
+    @DisplayName("시설 목록 조회(정상, 키워드 검색)")
+    void getFacilityList_Success_WithKeyword(){
+        int page = 1;
+        int limit = 10;
+        String keyword = "수영";
+        int fakeTotalCount = 5;
+
+        List<Facility> fakeList = new ArrayList<>();
+        Facility f = Facility.of(1L, "수영장");
+        fakeList.add(f);
+
+        when(facilityMapper.countWithFilters(eq(keyword), any(), any(), any(), any(), any(), any(), any(), any()))
+                .thenReturn(fakeTotalCount);
+        when(facilityMapper.findWithFilters(any(Pagination.class), eq(keyword), any(), any(), any(), any(), any(), any(), any(), any(), any()))
+                .thenReturn(fakeList);
+
+        FacilityListResponse result = facilityService.getFacilityList(
+                page, limit, keyword, null, null, null, null, null, null, null, null, null
+        );
+
+        assertThat(result).isNotNull();
+        assertThat(result.getFacilityList()).hasSize(1);
+        assertThat(result.getFacilityList().get(0).getName()).isEqualTo("수영장");
+
+        verify(facilityMapper, times(1)).countWithFilters(eq(keyword), any(), any(), any(), any(), any(), any(), any(), any());
+        verify(facilityMapper, times(1)).findWithFilters(any(), eq(keyword), any(), any(), any(), any(), any(), any(), any(), any(), any());
+        verify(facilityMapper, never()).countAll();
+        verify(facilityMapper, never()).findAll(any());
+    }
+
+    @Test
+    @DisplayName("시설 목록 조회(정상, 지역 필터)")
+    void getFacilityList_Success_WithRegionFilter(){
+        int page = 1;
+        int limit = 10;
+        String ctNm = "서울";
+        String ctDetailNm = "강남구";
+        int fakeTotalCount = 3;
+
+        List<Facility> fakeList = new ArrayList<>();
+        Facility f = Facility.of(1L, "강남시설");
+        fakeList.add(f);
+
+        when(facilityMapper.countWithFilters(any(), eq(ctNm), eq(ctDetailNm), any(), any(), any(), any(), any(), any()))
+                .thenReturn(fakeTotalCount);
+        when(facilityMapper.findWithFilters(any(), any(), eq(ctNm), eq(ctDetailNm), any(), any(), any(), any(), any(), any(), any()))
+                .thenReturn(fakeList);
+
+        FacilityListResponse result = facilityService.getFacilityList(
+                page, limit, null, ctNm, ctDetailNm, null, null, null, null, null, null, null
+        );
+
+        assertThat(result).isNotNull();
+        assertThat(result.getFacilityList()).hasSize(1);
+
+        verify(facilityMapper, times(1)).countWithFilters(any(), eq(ctNm), eq(ctDetailNm), any(), any(), any(), any(), any(), any());
+        verify(facilityMapper, times(1)).findWithFilters(any(), any(), eq(ctNm), eq(ctDetailNm), any(), any(), any(), any(), any(), any(), any());
+    }
+
+    @Test
+    @DisplayName("시설 목록 조회(정상, 종목 필터)")
+    void getFacilityList_Success_WithSportFilter(){
+        int page = 1;
+        int limit = 10;
+        String mainSport = "수영";
+        int fakeTotalCount = 7;
+
+        List<Facility> fakeList = new ArrayList<>();
+        Facility f = Facility.of(1L, "수영시설");
+        fakeList.add(f);
+
+        when(facilityMapper.countWithFilters(any(), any(), any(), eq(mainSport), any(), any(), any(), any(), any()))
+                .thenReturn(fakeTotalCount);
+        when(facilityMapper.findWithFilters(any(), any(), any(), any(), eq(mainSport), any(), any(), any(), any(), any(), any()))
+                .thenReturn(fakeList);
+
+        FacilityListResponse result = facilityService.getFacilityList(
+                page, limit, null, null, null, mainSport, null, null, null, null, null, null
+        );
+
+        assertThat(result).isNotNull();
+        assertThat(result.getFacilityList()).hasSize(1);
+
+        verify(facilityMapper, times(1)).countWithFilters(any(), any(), any(), eq(mainSport), any(), any(), any(), any(), any());
+        verify(facilityMapper, times(1)).findWithFilters(any(), any(), any(), any(), eq(mainSport), any(), any(), any(), any(), any(), any());
+    }
+
+    @Test
+    @DisplayName("시설 목록 조회(정상, 평점 범위 필터)")
+    void getFacilityList_Success_WithRatingFilter(){
+        int page = 1;
+        int limit = 10;
+        Double minRating = 4.0;
+        Double maxRating = 5.0;
+        int fakeTotalCount = 10;
+
+        List<Facility> fakeList = new ArrayList<>();
+        Facility f = Facility.of(1L, "고평점시설");
+        fakeList.add(f);
+
+        when(facilityMapper.countWithFilters(any(), any(), any(), any(), eq(minRating), eq(maxRating), any(), any(), any()))
+                .thenReturn(fakeTotalCount);
+        when(facilityMapper.findWithFilters(any(), any(), any(), any(), any(), eq(minRating), eq(maxRating), any(), any(), any(), any()))
+                .thenReturn(fakeList);
+
+        FacilityListResponse result = facilityService.getFacilityList(
+                page, limit, null, null, null, null, minRating, maxRating, null, null, null, null
+        );
+
+        assertThat(result).isNotNull();
+        assertThat(result.getFacilityList()).hasSize(1);
+
+        verify(facilityMapper, times(1)).countWithFilters(any(), any(), any(), any(), eq(minRating), eq(maxRating), any(), any(), any());
+        verify(facilityMapper, times(1)).findWithFilters(any(), any(), any(), any(), any(), eq(minRating), eq(maxRating), any(), any(), any(), any());
+    }
+
+    @Test
+    @DisplayName("시설 목록 조회(정상, 거리 필터)")
+    void getFacilityList_Success_WithDistanceFilter(){
+        int page = 1;
+        int limit = 10;
+        Double lat = 37.5665;
+        Double lng = 126.9780;
+        Integer radius = 5000;
+        int fakeTotalCount = 2;
+
+        List<Facility> fakeList = new ArrayList<>();
+        Facility f = Facility.of(1L, "근처시설");
+        fakeList.add(f);
+
+        when(facilityMapper.countWithFilters(any(), any(), any(), any(), any(), any(), eq(lat), eq(lng), eq(radius)))
+                .thenReturn(fakeTotalCount);
+        when(facilityMapper.findWithFilters(any(), any(), any(), any(), any(), any(), any(), any(), eq(lat), eq(lng), eq(radius)))
+                .thenReturn(fakeList);
+
+        FacilityListResponse result = facilityService.getFacilityList(
+                page, limit, null, null, null, null, null, null, null, lat, lng, radius
+        );
+
+        assertThat(result).isNotNull();
+        assertThat(result.getFacilityList()).hasSize(1);
+
+        verify(facilityMapper, times(1)).countWithFilters(any(), any(), any(), any(), any(), any(), eq(lat), eq(lng), eq(radius));
+        verify(facilityMapper, times(1)).findWithFilters(any(), any(), any(), any(), any(), any(), any(), any(), eq(lat), eq(lng), eq(radius));
+    }
+
+    @Test
+    @DisplayName("시설 목록 조회(정상, 복합 필터)")
+    void getFacilityList_Success_WithMultipleFilters(){
+        int page = 1;
+        int limit = 10;
+        String keyword = "수영";
+        String ctNm = "서울";
+        Double minRating = 4.5;
+        int fakeTotalCount = 1;
+
+        List<Facility> fakeList = new ArrayList<>();
+        Facility f = Facility.of(1L, "서울수영장");
+        fakeList.add(f);
+
+        when(facilityMapper.countWithFilters(eq(keyword), eq(ctNm), any(), any(), eq(minRating), any(), any(), any(), any()))
+                .thenReturn(fakeTotalCount);
+        when(facilityMapper.findWithFilters(any(), eq(keyword), eq(ctNm), any(), any(), eq(minRating), any(), any(), any(), any(), any()))
+                .thenReturn(fakeList);
+
+        FacilityListResponse result = facilityService.getFacilityList(
+                page, limit, keyword, ctNm, null, null, minRating, null, null, null, null, null
+        );
+
+        assertThat(result).isNotNull();
+        assertThat(result.getFacilityList()).hasSize(1);
+
+        verify(facilityMapper, times(1)).countWithFilters(eq(keyword), eq(ctNm), any(), any(), eq(minRating), any(), any(), any(), any());
+        verify(facilityMapper, times(1)).findWithFilters(any(), eq(keyword), eq(ctNm), any(), any(), eq(minRating), any(), any(), any(), any(), any());
     }
 
     @Test
@@ -72,12 +250,15 @@ public class FacilityServiceImplTest {
         int page = 1;
         int limit = 10;
 
-        // 빈 리스트
         List<Facility> fakeEmptyList = new ArrayList<>();
-        when(facilityMapper.countAll()).thenReturn(0);
-        when(facilityMapper.findAll(any(Pagination.class))).thenReturn(fakeEmptyList);
+        when(facilityMapper.countWithFilters(any(), any(), any(), any(), any(), any(), any(), any(), any()))
+                .thenReturn(0);
+        when(facilityMapper.findWithFilters(any(Pagination.class), any(), any(), any(), any(), any(), any(), any(), any(), any(), any()))
+                .thenReturn(fakeEmptyList);
 
-        FacilityListResponse result = facilityService.getFacilityList(page, limit);
+        FacilityListResponse result = facilityService.getFacilityList(
+                page, limit, null, null, null, null, null, null, null, null, null, null
+        );
         assertThat(result).isNotNull();
 
         assertThat(result.getFacilityList()).isNotNull();
@@ -99,8 +280,6 @@ public class FacilityServiceImplTest {
                 .isInstanceOf(BusinessException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.FACILITY_NOT_FOUND);
         verify(facilityMapper, times(1)).findById(nonExistId);
-
-
     }
 
     @Test
@@ -118,14 +297,52 @@ public class FacilityServiceImplTest {
     }
 
     @Test
-    @DisplayName("시설 목록 조회(실패, 잘못된 입력)")
-    void getFacilityList_ShouldThrowException_WhenInvalidInput(){
-        assertThatThrownBy(() -> facilityService.getFacilityList(0, 10))
-                .isInstanceOf(BusinessException.class)
-                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.INVALID_INPUT);
-        assertThatThrownBy(() -> facilityService.getFacilityList(1, 0))
+    @DisplayName("시설 목록 조회(실패, 잘못된 입력 - page)")
+    void getFacilityList_ShouldThrowException_WhenInvalidPage(){
+        assertThatThrownBy(() -> facilityService.getFacilityList(
+                0, 10, null, null, null, null, null, null, null, null, null, null
+        ))
                 .isInstanceOf(BusinessException.class)
                 .hasFieldOrPropertyWithValue("errorCode", ErrorCode.INVALID_INPUT);
     }
 
+    @Test
+    @DisplayName("시설 목록 조회(실패, 잘못된 입력 - limit)")
+    void getFacilityList_ShouldThrowException_WhenInvalidLimit(){
+        assertThatThrownBy(() -> facilityService.getFacilityList(
+                1, 0, null, null, null, null, null, null, null, null, null, null
+        ))
+                .isInstanceOf(BusinessException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.INVALID_INPUT);
+    }
+
+    @Test
+    @DisplayName("시설 목록 조회(실패, distance 정렬인데 좌표 없음)")
+    void getFacilityList_ShouldThrowException_WhenDistanceSortWithoutCoordinates(){
+        assertThatThrownBy(() -> facilityService.getFacilityList(
+                1, 10, null, null, null, null, null, null, "distance", null, null, null
+        ))
+                .isInstanceOf(BusinessException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.INVALID_INPUT);
+    }
+
+    @Test
+    @DisplayName("시설 목록 조회(실패, distance 정렬인데 위도만 있음)")
+    void getFacilityList_ShouldThrowException_WhenDistanceSortWithOnlyLatitude(){
+        assertThatThrownBy(() -> facilityService.getFacilityList(
+                1, 10, null, null, null, null, null, null, "distance", 37.5665, null, null
+        ))
+                .isInstanceOf(BusinessException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.INVALID_INPUT);
+    }
+
+    @Test
+    @DisplayName("시설 목록 조회(실패, distance 정렬인데 경도만 있음)")
+    void getFacilityList_ShouldThrowException_WhenDistanceSortWithOnlyLongitude(){
+        assertThatThrownBy(() -> facilityService.getFacilityList(
+                1, 10, null, null, null, null, null, null, "distance", null, 126.9780, null
+        ))
+                .isInstanceOf(BusinessException.class)
+                .hasFieldOrPropertyWithValue("errorCode", ErrorCode.INVALID_INPUT);
+    }
 }

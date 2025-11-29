@@ -14,4 +14,24 @@ public interface FacilityMapper {
     int countAll();
     void updateAverRating(@Param("facilityId") Long facilityId,
                           @Param("averRating") Double averRating);
+    List<Facility> findWithFilters(@Param("pagination") Pagination pagination,
+                                   @Param("keyword") String keyword,
+                                   @Param("ctNm") String ctNm,
+                                   @Param("ctDetailNm") String ctDetailNm,
+                                   @Param("mainSport") String mainSport,
+                                   @Param("minRating") Double minRating,
+                                   @Param("maxRating") Double maxRating,
+                                   @Param("sortBy") String sortBy,
+                                   @Param("lat") Double lat,
+                                   @Param("lng") Double lng,
+                                   @Param("radius") Integer radius);
+    int countWithFilters(@Param("keyword") String keyword,
+                         @Param("ctNm") String ctNm,
+                         @Param("ctDetailNm") String ctDetailNm,
+                         @Param("mainSport") String mainSport,
+                         @Param("minRating") Double minRating,
+                         @Param("maxRating") Double maxRating,
+                         @Param("lat") Double lat,
+                         @Param("lng") Double lng,
+                         @Param("radius") Integer radius);
 }
