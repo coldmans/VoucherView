@@ -11,10 +11,17 @@ public class Facility {
     private Long facilityId; // PK
     private String name;
     private String address;
+    private String ctNm; // 지역
+    private String ctDetailNm; // 구
+    private String detailAddress;
     private String phoneNumber;
+    private Long mainSportId;
     private String mainSport;
+    private String zipNo;
 
     private Point location;
+    private Double latitude;  // ST_Y(location)
+    private Double longitude; // ST_X(location)
     private Double averRating;
 
     public void changeAverRating(Double averRating){

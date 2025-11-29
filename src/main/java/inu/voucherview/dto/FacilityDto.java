@@ -24,10 +24,9 @@ public class FacilityDto {
         this.mainSport = facility.getMainSport();
         this.averRating = facility.getAverRating();
 
-        if(facility.getLocation() != null){
-            this.latitude = facility.getLocation().getY();
-            this.longitude = facility.getLocation().getX();
-        }
+        // Domain에서 직접 latitude/longitude 가져오기 (DB에서 ST_X/ST_Y로 추출됨)
+        this.latitude = facility.getLatitude();
+        this.longitude = facility.getLongitude();
     }
 
 }

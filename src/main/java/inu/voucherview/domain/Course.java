@@ -3,8 +3,7 @@ package inu.voucherview.domain;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.time.DayOfWeek;
-import java.time.LocalTime;
+import java.time.LocalDate;
 
 @Getter
 @ToString
@@ -13,14 +12,21 @@ import java.time.LocalTime;
 public class Course {
     private Long courseId; // PK
     private Long facilityId; // FK
-    private String courseNm; // 강좌명
-    private String teacher; // 강사명
-    private LocalTime beginTime; // 시작시간
-    private LocalTime endTime; // 종료시간
-    private String weekDay; // 요일명
-    private String courseDetail; // 상세 내용
-    private BigDecimal price; // 수강 가격
-    private BigDecimal priceValue; // 결제 금액 값
+
+    private String courseNo; // 강좌번호
+    private String courseName; // 강좌명
+
+    private String sportCd; // 종목 코드
+    private String sportName; // 종목명
+
+    private LocalDate startDate; // 시작일
+    private LocalDate endDate; // 종료일
+
+    private String establishmentYear; // 개설년도
+    private String establishmentMonth; // 개설월
+
+    private Integer requestCount; // 신청인원
+    private BigDecimal price; // 가격
 
     public static Course of(Long courseId, Long facilityId){
         Course course = new Course();
