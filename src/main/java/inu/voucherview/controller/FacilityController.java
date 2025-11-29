@@ -32,7 +32,7 @@ public class FacilityController {
             @RequestParam(name = "sortBy", defaultValue = "rating") String sortBy, // rating, distance
             @RequestParam(name = "lat", required = false) Double lat,
             @RequestParam(name = "lng", required = false) Double lng,
-            @RequestParam(name = "radius", required = false) int radius // 반경
+            @RequestParam(name = "radius", required = false) Integer radius // 반경
     ){
         return facilityService.getFacilityList(page, limit, keyword, ctNm, ctDetailNm, mainSport,
                 minRating, maxRating, sortBy, lat, lng, radius
