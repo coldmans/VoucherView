@@ -11,7 +11,8 @@ public interface FacilityService {
      * @param limit 페이지당 개수
      * @return 'facilities' (목록)와 'pagination'이 담긴 Map
      */
-    FacilityListResponse getFacilityList(int page, int limit);
+    FacilityListResponse getFacilityList(int page, int limit, String keyword, String ctNm, String ctDetailNm, String mainSport,
+                                         Double minRating, Double maxRating, String sortBy, Double lat, Double lng, Integer radius);
 
     /**
      * 시설 상세 정보 조회

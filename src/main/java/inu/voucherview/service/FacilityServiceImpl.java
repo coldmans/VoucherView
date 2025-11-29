@@ -16,22 +16,40 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class FacilityServiceImpl implements FacilityService{
+public class FacilityServiceImpl implements FacilityService {
     private final FacilityMapper facilityMapper;
 
     @Override
-    public FacilityListResponse getFacilityList(int page, int limit) {
+    public FacilityListResponse getFacilityList(int page, int limit, String keyword, String ctNm, String ctDetailNm, String mainSport,
+                                                Double minRating, Double maxRating, String sortBy, Double lat, Double lng, Integer radius) {
         if(page <= 0 || limit <= 0){
             throw new BusinessException(ErrorCode.INVALID_INPUT);
         }
-        int totalCount = facilityMapper.countAll();
-        Pagination pagination = new Pagination(page, limit, totalCount);
-        List<Facility> facilityList = facilityMapper.findAll(pagination);
+        if(sortBy.equals("distance") && (lat == null || lng == null)){
+            throw new BusinessException(ErrorCode.INVALID_INPUT);
+        }
+        boolean ifFilter = keyword != null || ctNm != null || ctDetailNm != null || mainSport != null
+                || minRating != null || maxRating != null || radius != null;
+        int totalCount;
+        List<Facility> facilityList;
+        if(ifFilter){
+            totalCount = facilityMapper.countWithFilters(keyword, ctNm, ctDetailNm, mainSport, minRating,
+                    maxRating, lat, lng, radius);
+            Pagination pagination = new Pagination(page, limit, totalCount);
+
+            facilityList = facilityMapper.findWithFilters(pagination, keyword, ctNm, ctDetailNm, mainSport,
+                    minRating, maxRating, sortBy, lat, lng, radius);
+        }
+        else {
+            totalCount = facilityMapper.countAll();
+            Pagination pagination = new Pagination(page, limit, totalCount);
+            facilityList = facilityMapper.findAll(pagination);
+        }
         List<FacilityDto> dtoList = facilityList.stream()
                 .map(FacilityDto::new)
                 .toList();
 
-        return new FacilityListResponse(dtoList, pagination);
+        return new FacilityListResponse(dtoList, new Pagination(page, limit, totalCount));
     }
 
     @Override

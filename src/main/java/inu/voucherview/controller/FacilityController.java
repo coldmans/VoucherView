@@ -22,9 +22,21 @@ public class FacilityController {
     @GetMapping
     public FacilityListResponse getFacilityList(
             @RequestParam(name = "page", defaultValue = "1") int page,
-            @RequestParam(name = "limit", defaultValue = "10") int limit
+            @RequestParam(name = "limit", defaultValue = "10") int limit,
+            @RequestParam(name = "keyword", required = false) String keyword,
+            @RequestParam(name = "ctNm", required = false) String ctNm, // 지역 ex(서울, 경기)
+            @RequestParam(name = "ctDetailNm", required = false) String ctDetailNm, // 구
+            @RequestParam(name = "mainSport", required = false) String mainSport,
+            @RequestParam(name = "minRating", required = false) Double minRating,
+            @RequestParam(name = "maxRating", required = false) Double maxRating,
+            @RequestParam(name = "sortBy", defaultValue = "rating") String sortBy, // rating, distance
+            @RequestParam(name = "lat", required = false) Double lat,
+            @RequestParam(name = "lng", required = false) Double lng,
+            @RequestParam(name = "radius", required = false) int radius // 반경
     ){
-        return facilityService.getFacilityList(page, limit);
+        return facilityService.getFacilityList(page, limit, keyword, ctNm, ctDetailNm, mainSport,
+                minRating, maxRating, sortBy, lat, lng, radius
+        );
     }
 
     /**
