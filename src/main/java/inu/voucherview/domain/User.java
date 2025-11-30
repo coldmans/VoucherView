@@ -9,11 +9,12 @@ import java.time.LocalDateTime;
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 @EqualsAndHashCode(of = "userId")
 public class User {
     private Long userId;
     private String email;
-    private String password;
     private String nickname;
 
     // 사용자의 위치를 저장하는 변수
@@ -22,10 +23,6 @@ public class User {
 
     public void changeEmail(String email){
         this.email = email;
-    }
-
-    public void changePassword(String password){
-        this.password = password;
     }
 
     public void changeNickname(String nickname){
