@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="inu.voucherview.mapper.UserMapper">
+    <resultMap id="UserMap" type="inu.voucherview.domain.User">
+        <id column="user_id" property="userId"/>
+        <result column="email" property="email"/>
+        <result column="nickname" property="nickname"/>
+        <result column="created_at" property="createdAt"/>
+    </resultMap>
+
+    <!-- 카카오 ID로 유저 조회 -->
+    <select id="findByUserId" parameterType="long" resultMap="UserMap">
+        SELECT user_id, email, nickname, created_at
+        FROM user
+        WHERE user_id = #{userId}
+    </select>
+
+    <!-- 유저 생성 (회원가입) -->
+    <insert id="insertUser" parameterType="inu.voucherview.domain.User">
+        INSERT INTO user (user_id, email, nickname, created_at)
+        VALUES (#{userId}, #{email}, #{nickname}, #{createdAt})
+    </insert>
+</mapper>
