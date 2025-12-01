@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="inu.voucherview.mapper.ReviewMapper">
+    <resultMap id="ReviewMap" type="inu.voucherview.domain.Review">
+        <id column="review_id" property="reviewId"/>
+        <result column="user_id" property="userId"/>
+        <result column="facility_id" property="facilityId"/>
+        <result column="content" property="content"/>
+        <result column="rating" property="rating"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+    </resultMap>
+
+    <!-- 리뷰 생성 -->
+    <insert id="insertReview" parameterType="inu.voucherview.domain.Review" useGeneratedKeys="true" keyProperty="reviewId">
+        INSERT INTO review (user_id, facility_id, content, rating, created_at)
+        VALUES (#{userId}, #{facilityId}, #{content}, #{rating}, #{createdAt})
+    </insert>
+
+    <!-- 리뷰 조회 (ID로) -->
+    <select id="findById" parameterType="long" resultMap="ReviewMap">
+        SELECT review_id, user_id, facility_id, content, rating, created_at, updated_at
+        FROM review
+        WHERE review_id = #{reviewId}
+    </select>
+
+    <!-- 특정 시설의 모든 리뷰 조회 (페이지네이션) -->
+    <select id="findByFacilityId" resultMap="ReviewMap">
+        SELECT review_id, user_id, facility_id, content, rating, created_at, updated_at
+        FROM review
+        WHERE facility_id = #{facilityId}
+        ORDER BY created_at DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 특정 유저의 모든 리뷰 조회 (페이지네이션) -->
+    <select id="findByUserId" resultMap="ReviewMap">
+        SELECT review_id, user_id, facility_id, content, rating, created_at, updated_at
+        FROM review
+        WHERE user_id = #{userId}
+        ORDER BY created_at DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 리뷰 수정 -->
+    <update id="updateReview" parameterType="inu.voucherview.domain.Review">
+        UPDATE review
+        SET content = #{content},
+            rating = #{rating},
+            updated_at = NOW()
+        WHERE review_id = #{reviewId}
+    </update>
+
+    <!-- 리뷰 삭제 -->
+    <delete id="deleteReview" parameterType="long">
+        DELETE FROM review
+        WHERE review_id = #{reviewId}
+    </delete>
+
+    <!-- 시설의 평균 별점 조회 -->
+    <select id="getAverageRating" parameterType="long" resultType="double">
+        SELECT AVG(rating)
+        FROM review
+        WHERE facility_id = #{facilityId}
+    </select>
+
+    <!-- 시설의 리뷰 개수 -->
+    <select id="countByFacilityId" parameterType="long" resultType="int">
+        SELECT COUNT(*)
+        FROM review
+        WHERE facility_id = #{facilityId}
+    </select>
+
+    <!-- 특정 유저가 특정 시설에 작성한 리뷰 조회 -->
+    <select id="findByUserIdAndFacilityId" resultMap="ReviewMap">
+        SELECT review_id, user_id, facility_id, content, rating, created_at, updated_at
+        FROM review
+        WHERE user_id = #{userId} AND facility_id = #{facilityId}
+    </select>
+</mapper>
