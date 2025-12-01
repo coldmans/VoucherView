@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="inu.voucherview.mapper.PostVoteMapper">
+
+    <resultMap id="PostVoteMap" type="inu.voucherview.domain.PostVote">
+        <id column="vote_id" property="voteId"/>
+        <result column="post_id" property="postId"/>
+        <result column="user_id" property="userId"/>
+        <result column="vote_type" property="voteType" typeHandler="org.apache.ibatis.type.EnumTypeHandler"/>
+        <result column="created_at" property="createdAt"/>
+    </resultMap>
+
+    <!-- 투표 추가 또는 변경 (ON DUPLICATE KEY UPDATE 사용) -->
+    <insert id="upsert" parameterType="inu.voucherview.domain.PostVote">
+        INSERT INTO post_vote (post_id, user_id, vote_type)
+        VALUES (#{postId}, #{userId}, #{voteType})
+        ON DUPLICATE KEY UPDATE vote_type = #{voteType}
+    </insert>
+
+    <!-- 투표 조회 -->
+    <select id="findByUserAndPost" resultMap="PostVoteMap">
+        SELECT vote_id, post_id, user_id, vote_type, created_at
+        FROM post_vote
+        WHERE user_id = #{userId} AND post_id = #{postId}
+    </select>
+
+    <!-- 투표 삭제 -->
+    <delete id="delete">
+        DELETE FROM post_vote
+        WHERE user_id = #{userId} AND post_id = #{postId}
+    </delete>
+
+    <!-- 게시물의 추천 수 조회 -->
+    <select id="countUpvotes" resultType="int">
+        SELECT COUNT(*)
+        FROM post_vote
+        WHERE post_id = #{postId} AND vote_type = 'UP'
+    </select>
+
+    <!-- 게시물의 비추천 수 조회 -->
+    <select id="countDownvotes" resultType="int">
+        SELECT COUNT(*)
+        FROM post_vote
+        WHERE post_id = #{postId} AND vote_type = 'DOWN'
+    </select>
+
+</mapper>

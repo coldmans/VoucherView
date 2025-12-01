@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 @ToString
 @EqualsAndHashCode(of = "commentId")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 public class Comment {
     private Long commentId; // PK
     private Long postId; // FK (Post)
