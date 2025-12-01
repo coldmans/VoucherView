@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 @Getter
 @ToString
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 @EqualsAndHashCode(of = "reviewId")
 public class Review {
     private Long reviewId; // PK
