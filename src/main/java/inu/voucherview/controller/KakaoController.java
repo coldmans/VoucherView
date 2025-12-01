@@ -1,7 +1,9 @@
 package inu.voucherview.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import inu.voucherview.domain.User;
 import inu.voucherview.service.KakaoService;
+import inu.voucherview.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -14,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Map;
 
 
 @RestController
@@ -21,6 +24,8 @@ import java.io.IOException;
 public class KakaoController {
 
     private final KakaoService kakaoService;
+    private final JwtUtil jwtUtil;
+
     @Value("${kakao.client.id}")
     String clientId;
 
@@ -70,7 +75,7 @@ public class KakaoController {
     }
 
     @PostMapping("/oauth/kakao/access")
-    public String postGetUserInfo(@RequestBody String accessToken) throws JsonProcessingException{
+    public Map<String, String> postGetUserInfo(@RequestBody String accessToken) throws JsonProcessingException{
         System.out.println(3);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + accessToken);
@@ -82,9 +87,16 @@ public class KakaoController {
         );
         System.out.println(response.getBody());
 
-        // 카카오 사용자 정보로 회원가입/로그인 후 JWT 발급
-        String jwt = kakaoService.loginOrSignup(response.getBody());
+        // 카카오 사용자 정보로 회원가입/로그인 후 사용자 정보 조회
+        User user = kakaoService.loginOrSignup(response.getBody());
 
-        return jwt;
+        // JWT 발급
+        String jwt = jwtUtil.generateToken(user.getUserId());
+
+        // JWT와 닉네임 함께 반환
+        return Map.of(
+                "token", jwt,
+                "nickname", user.getNickname() != null ? user.getNickname() : ""
+        );
     }
 }

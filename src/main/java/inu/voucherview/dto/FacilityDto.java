@@ -13,6 +13,7 @@ public class FacilityDto {
     private String mainSport;
     private Double averRating;
     private Integer reviewCount; // 리뷰 개수
+    private Boolean isFavorite; // 찜 여부 (로그인하지 않은 경우 false)
 
     private Double latitude; // 위도
     private Double longitude; // 경도
@@ -25,10 +26,15 @@ public class FacilityDto {
         this.mainSport = facility.getMainSport();
         this.averRating = facility.getAverRating();
         this.reviewCount = facility.getReviewCount();
+        this.isFavorite = false; // 기본값
 
         // Domain에서 직접 latitude/longitude 가져오기 (DB에서 ST_X/ST_Y로 추출됨)
         this.latitude = facility.getLatitude();
         this.longitude = facility.getLongitude();
+    }
+
+    public void setIsFavorite(Boolean isFavorite) {
+        this.isFavorite = isFavorite;
     }
 
 }

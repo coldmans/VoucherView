@@ -7,6 +7,7 @@ import inu.voucherview.response.CourseListResponse;
 import inu.voucherview.response.FacilityListResponse;
 import inu.voucherview.service.CourseService;
 import inu.voucherview.service.FacilityService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,11 +23,15 @@ public class FacilityController {
      */
     @GetMapping
     public FacilityListResponse getFacilityList(
+            HttpServletRequest request,
             @RequestParam(name = "page", defaultValue = "1") int page,
             @RequestParam(name = "limit", defaultValue = "10") int limit,
             @ModelAttribute FacilitySearchRequest searchRequest
     ){
-        return facilityService.getFacilityList(page, limit, searchRequest.getKeyword(),
+        // JWT에서 userId 추출 (로그인하지 않은 경우 null)
+        Long userId = (Long) request.getAttribute("userId");
+
+        return facilityService.getFacilityList(userId, page, limit, searchRequest.getKeyword(),
                 searchRequest.getCtNm(), searchRequest.getCtDetailNm(), searchRequest.getMainSport(),
                 searchRequest.getMinRating(), searchRequest.getMaxRating(), searchRequest.getSortBy(),
                 searchRequest.getLat(), searchRequest.getLng(), searchRequest.getRadius()
@@ -38,9 +43,13 @@ public class FacilityController {
      */
     @GetMapping("/{facilityId}")
     public FacilityDto getFacilityById(
+            HttpServletRequest request,
             @PathVariable Long facilityId
     ){
-        return facilityService.getFacilityById(facilityId);
+        // JWT에서 userId 추출 (로그인하지 않은 경우 null)
+        Long userId = (Long) request.getAttribute("userId");
+
+        return facilityService.getFacilityById(userId, facilityId);
     }
 
     /**

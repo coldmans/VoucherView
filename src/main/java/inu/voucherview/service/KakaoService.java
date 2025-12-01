@@ -21,10 +21,10 @@ public class KakaoService {
     private final ObjectMapper objectMapper;
 
     /**
-     * 카카오 사용자 정보로 회원가입/로그인 처리 후 JWT 토큰 반환
+     * 카카오 사용자 정보로 회원가입/로그인 처리 후 JWT 토큰과 사용자 정보 반환
      */
     @Transactional
-    public String loginOrSignup(String kakaoUserInfoJson) throws JsonProcessingException {
+    public User loginOrSignup(String kakaoUserInfoJson) throws JsonProcessingException {
         // 카카오 사용자 정보 파싱
         JsonNode userInfo = objectMapper.readTree(kakaoUserInfoJson);
         Long kakaoId = userInfo.get("id").asLong();
@@ -64,7 +64,6 @@ public class KakaoService {
             userMapper.insertUser(user);
         }
 
-        // JWT 토큰 발급
-        return jwtUtil.generateToken(kakaoId);
+        return user;
     }
 }
