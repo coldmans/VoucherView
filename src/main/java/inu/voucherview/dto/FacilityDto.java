@@ -12,6 +12,7 @@ public class FacilityDto {
     private String phoneNumber;
     private String mainSport;
     private Double averRating;
+    private Integer reviewCount; // 리뷰 개수
 
     private Double latitude; // 위도
     private Double longitude; // 경도
@@ -23,6 +24,7 @@ public class FacilityDto {
         this.phoneNumber = facility.getPhoneNumber();
         this.mainSport = facility.getMainSport();
         this.averRating = facility.getAverRating();
+        this.reviewCount = facility.getReviewCount();
 
         // Domain에서 직접 latitude/longitude 가져오기 (DB에서 ST_X/ST_Y로 추출됨)
         this.latitude = facility.getLatitude();

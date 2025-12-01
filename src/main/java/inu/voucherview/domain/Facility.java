@@ -23,9 +23,14 @@ public class Facility {
     private Double latitude;  // ST_Y(location)
     private Double longitude; // ST_X(location)
     private Double averRating;
+    private Integer reviewCount; // 리뷰 개수
 
     public void changeAverRating(Double averRating){
         this.averRating = averRating;
+    }
+
+    public void changeReviewCount(Integer reviewCount){
+        this.reviewCount = reviewCount;
     }
 
     public static Facility of(Long facilityId, String name){
