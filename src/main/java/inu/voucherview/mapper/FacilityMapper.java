@@ -39,4 +39,5 @@ public interface FacilityMapper {
     List<String> getDistinctProvinces();  // 시/도 목록
     List<String> getDistinctCities(@Param("province") String province);  // 특정 시/도의 구/시 목록
     List<String> getDistinctSports();
+    List<Facility> getFavorite3Facilities();
 }

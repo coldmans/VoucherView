@@ -22,4 +22,10 @@ public interface FacilityService {
      * @return Facility 객체
      */
     FacilityDto getFacilityById(Long userId, Long facilityId);
+
+    /**
+     * 인기 시설 3개 조회
+     * @return 'facilities' 목록
+     */
+    FacilityListResponse getFacilityFavoriteList();
 }

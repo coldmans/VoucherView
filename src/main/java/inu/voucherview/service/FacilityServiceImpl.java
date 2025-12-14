@@ -70,4 +70,17 @@ public class FacilityServiceImpl implements FacilityService {
 
         return dto;
     }
+
+    @Override
+    public FacilityListResponse getFacilityFavoriteList() {
+        List<Facility> facilityList = facilityMapper.getFavorite3Facilities();
+
+        List<FacilityDto> dtoList = facilityList.stream()
+                .map(FacilityDto::new)
+                .toList();
+
+        Pagination pagination = new Pagination(1, 3, dtoList.size());
+
+        return new FacilityListResponse(dtoList, pagination);
+    }
 }

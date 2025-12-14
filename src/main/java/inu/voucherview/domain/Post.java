@@ -8,6 +8,8 @@ import java.time.LocalDateTime;
 @ToString
 @EqualsAndHashCode(of = "postId")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 public class Post {
     private Long postId; // PK
     private Long userId; // FK (User)
@@ -15,6 +17,10 @@ public class Post {
     private PostCategory category; // 카테고리 (예: "Q&A", "FREE")
     private String title;
     private String content;
+
+    private Integer upvoteCount; // 추천 수
+    private Integer downvoteCount; // 비추천 수
+    private Integer commentCount; // 댓글 수
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

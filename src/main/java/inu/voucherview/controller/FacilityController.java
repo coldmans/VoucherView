@@ -64,6 +64,14 @@ public class FacilityController {
         return courseService.getCoursesByFacilityId(facilityId, page, limit);
     }
 
+    /**
+     * [인기 시설 상위 3개 조회] GET /api/facilities/favorite
+     */
+    @GetMapping("/favorite")
+    public FacilityListResponse getFacilityFavorite(){
+        return facilityService.getFacilityFavoriteList();
+    }
+
 
 
 }
