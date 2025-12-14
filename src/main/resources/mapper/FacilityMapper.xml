@@ -24,6 +24,7 @@
         <result column="longitude" property="longitude"/>
         <result column="aver_rating" property="averRating"/>
         <result column="review_count" property="reviewCount"/>
+        <result column="favorite_count" property="favoriteCount"/>
     </resultMap>
 
     <select id ="findById" resultMap="FacilityMap">
@@ -154,6 +155,16 @@
         FROM facilities
         WHERE main_sport IS NOT NULL
         ORDER BY main_sport
+    </select>
+
+    <select id="getFavorite3Facilities" resultMap="FacilityMap">
+        SELECT facilities.facility_id, facilities.name, facilities.tel_no, facilities.main_sport, facilities.address, COALESCE(AVG(rating),0) as aver_rating, COUNT(favorite_id) as favorite_count
+        FROM facilities
+        LEFT JOIN favorite_facility on facilities.facility_id = favorite_facility.facility_id
+        LEFT JOIN review on facilities.facility_id = review.facility_id
+        GROUP BY facilities.facility_id
+        ORDER BY favorite_count DESC
+        LIMIT 3;
     </select>
 
 </mapper>

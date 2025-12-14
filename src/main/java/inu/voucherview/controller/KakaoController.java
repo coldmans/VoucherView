@@ -48,7 +48,7 @@ public class KakaoController {
     public void kakaoCallback(@RequestParam String code, HttpServletResponse response) throws IOException {
         System.out.println("카카오 콜백 받음, code: " + code);
         // 카카오에서 받은 code를 프론트엔드로 리다이렉트
-        response.sendRedirect("http://localhost:3000/login?code=" + code);
+        response.sendRedirect("https://webfront-750840454420.asia-northeast3.run.app/login?code=" + code);
     }
 
     @PostMapping("/oauth/kakao/token")

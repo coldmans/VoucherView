@@ -25,7 +25,8 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins(
                         "http://localhost:3000",
                         "http://localhost:3001",
-                        "http://localhost:5173"
+                        "http://localhost:5173",
+                        "https://webfront-750840454420.asia-northeast3.run.app"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                 .allowedHeaders("*")
@@ -36,7 +37,8 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins(
                         "http://localhost:3000",
                         "http://localhost:3001",
-                        "http://localhost:5173"
+                        "http://localhost:5173",
+                        "https://webfront-750840454420.asia-northeast3.run.app"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                 .allowedHeaders("*")

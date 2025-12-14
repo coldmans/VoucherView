@@ -24,6 +24,7 @@ public class Facility {
     private Double longitude; // ST_X(location)
     private Double averRating;
     private Integer reviewCount; // 리뷰 개수
+    private Integer favoriteCount; // 찜 개수
 
     public void changeAverRating(Double averRating){
         this.averRating = averRating;
